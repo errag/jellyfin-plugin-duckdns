@@ -2,6 +2,8 @@
 
 <p align="center">
 Update your dynamic external IP address. Free dynamic DNS hosted on AWS.
+    
+<a href="https://www.duckdns.org/">DuckDNS.org</a>
 </p>
 
 ## Build the Plugin
