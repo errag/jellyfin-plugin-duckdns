@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>DuckDNS</title>
+</head>
+<body>
+    <div id="TemplateConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
+        <div data-role="content">
+            <div class="content-primary">
+                <form id="TemplateConfigForm">
+					<!-- -->
+					<div class="checkboxContainer checkboxContainer-withDescripton">
+                        <label class="emby-checkbox-label">
+                            <input id="Active" name="Active" type="checkbox" is="emby-checkbox" />
+                            <span>Enable</span>
+                        </label>
+                    </div>
+					
+                    <div class="inputContainer">
+                        <label class="inputeLabel inputLabelUnfocused" for="AString">Token</label>
+                        <input id="Token" name="Token" type="text" is="emby-input" />
+                    </div>
+					
+                    <div class="inputContainer">
+                        <label class="inputeLabel inputLabelUnfocused" for="AString">Addresses</label>
+                        <input id="Addresses" name="Addresses" type="text" is="emby-input" />
+                        <div class="fieldDescription">(Without "http[s]://" and ".duckdns.org") use ";" for multiple updates</div>
+                    </div>
+					
+                    <div>
+                        <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                            <span>Save</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var TemplateConfig = {
+                pluginUniqueId: '27d27661-3961-4bf9-b8b4-4e3a59f6d307'
+            };
+
+            $('#TemplateConfigPage').on('pageshow', function () {
+                Dashboard.showLoadingMsg();
+				
+                ApiClient.getPluginConfiguration(TemplateConfig.pluginUniqueId).then(function (config) {
+                    document.getElementById('Active').checked = config.Active;
+                    $('#Token').val(config.Token).change();
+                    $('#Addresses').val(config.Addresses).change();
+					
+                    Dashboard.hideLoadingMsg();
+                });
+            });
+
+            $('#TemplateConfigForm').on('submit', function () {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(TemplateConfig.pluginUniqueId).then(function (config) {
+                    config.Active = document.getElementById('Active').checked;
+                    config.Token = $('#Token').val();
+                    config.Addresses = $('#Addresses').val();
+					
+                    ApiClient.updatePluginConfiguration(TemplateConfig.pluginUniqueId, config).then(function (result) {
+                        Dashboard.processPluginConfigurationUpdateResult(result);
+                    });
+                });
+                return false;
+            });
+        </script>
+    </div>
+</body>
+</html>
